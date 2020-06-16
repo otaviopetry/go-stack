@@ -8,6 +8,7 @@ Built with Node.js.
 Packages installed so far:
 - Express
 - Nodemon -D
+- uuidv4
 
 To run the server:
 ```

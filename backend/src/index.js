@@ -1,46 +1,111 @@
 const express = require('express');
+const { uuid } = require('uuidv4');
 
 const app = express();
 
 // required to work with request body
 app.use(express.json());
 
+// create a temporary container for data structure
+const projects = [];
+
 // READ
 app.get('/projects', (request, response) => {
-    const query = request.query;
 
-    return response.json({
-        title: query.title,
-        owner: query.owner
-    });
+    // get the title query param if exists
+    const { title } = request.query;
+
+    // if there is a title requested, find if it exists and store to results
+    // else, show all projects
+    const results = title
+        ? projects.filter( project => project.title.includes(title))
+        : projects;
+
+    // return the results
+    return response.json(results);
+
 })
 
 //CREATE
-app.post('/projects', (request, response) => {    
-    const body = request.body;
+app.post('/projects', (request, response) => {
     
-    return response.json(body);
+    // destructuring of request body with desired info
+    const {title, author, nationality} = request.body;
+
+    // create the new project generating an uuid
+    const project = { id: uuid(), title, author, nationality };
+
+    // add the project to the temporary container
+    projects.push(project);
+
+    // return the created project    
+    return response.json(project);
+    
 })
 
 // UPDATE
 app.put('/projects/:id', (request, response) => {
-    const params = request.params;
-    
+
+    // destructuring to get only the id from the params
+    const { id } = request.params;
+
+    // destructuring the request body
+    const { title, author, nationality } = request.body;
+
+    // use javascript FIND to search the projects container
+    const projectIndex = projects.findIndex( project => project.id === id );
+
+    // if does not exist, return error
+    if ( projectIndex < 0 ) {
+        return response.status(400).json({ error: 'Project not found.' });
+    }
+
+    // update the desired project
+    const project = { 
+        id, 
+        title, 
+        author, 
+        nationality 
+    };
+
+    // update the project in the container
+    projects[projectIndex] = project;
+
+    // return the update project
     return response.json({
-        message: `Project ${params.id} has been updated.`
+        message: `The project ${title} has been updated`,
+        project: project
     })
+
 })
 
 // DELETE
 app.delete('/projects/:id', (request, response) => {
-    const params = request.params;
 
-    return response.json({
-        message: `Project ${params.id} has been deleted.`
-    })
+    // get the id
+    const { id } = request.params;
+
+    // check if project exists
+    const projectIndex = projects.findIndex( project => project.id === id );
+
+    // if not, return error
+    if ( projectIndex < 0 ) {
+        return response.status(400).json({ error: 'Project not found.' });
+    }
+
+    // if does exist, get its name and remove it from the projects array
+    const projectName = projects[projectIndex].title;
+    projects.splice(projectIndex, 1);
+
+    // return the success status code with an empty response
+    return response.status(204).send();
+    
+
 })
 
 
 app.listen('3333', () => {
+
     console.log(' 🚀 The server is up and running, dude :D');
+
 });

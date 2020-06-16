@@ -5,10 +5,11 @@
   "author": "otaviopetry",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon"    
+    "dev": "nodemon"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "uuidv4": "^6.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
