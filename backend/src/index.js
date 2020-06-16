@@ -1,5 +1,5 @@
 const express = require('express');
-const { uuid } = require('uuidv4');
+const { uuid, isUuid } = require('uuidv4');
 
 const app = express();
 
@@ -8,6 +8,48 @@ app.use(express.json());
 
 // create a temporary container for data structure
 const projects = [];
+
+
+// our first middleware
+function logRequests (request, response, next) {
+    
+    // get info from request
+    const { method, url } = request;
+
+    // store info into a variable
+    const logLabel = `[${method.toUpperCase()}] ${url}`;
+
+    // start counting the time or requisition
+    console.time(logLabel);
+
+    // continue the loop through the stack
+    next();
+
+    // end the time counter - executes after the route
+    console.timeEnd(logLabel);
+}
+
+// tell express to use our middleware function
+app.use(logRequests);
+
+// validate uuid
+function validateProjectId (request, response, next) {
+
+    // get the id from request parameters
+    const { id } = request.params;
+
+    // if its not valid, RETURN (stops the req) with status 400
+    if (!isUuid(id)) {
+        return response.status(400).json({ error: "Invalid id."})
+    }
+    
+    // if it is valid, follow along
+    return next();
+
+}
+
+// set express to only use above middleware at specific routes
+app.use('/projects/:id', validateProjectId);
 
 // READ
 app.get('/projects', (request, response) => {
@@ -44,7 +86,7 @@ app.post('/projects', (request, response) => {
 })
 
 // UPDATE
-app.put('/projects/:id', (request, response) => {
+app.put('/projects/:id', validateProjectId, (request, response) => {
 
     // destructuring to get only the id from the params
     const { id } = request.params;
@@ -52,7 +94,7 @@ app.put('/projects/:id', (request, response) => {
     // destructuring the request body
     const { title, author, nationality } = request.body;
 
-    // use javascript FIND to search the projects container
+    // use javascript findIndex to search the projects container for the desired id and its position
     const projectIndex = projects.findIndex( project => project.id === id );
 
     // if does not exist, return error
@@ -71,7 +113,7 @@ app.put('/projects/:id', (request, response) => {
     // update the project in the container
     projects[projectIndex] = project;
 
-    // return the update project
+    // return the updated project
     return response.json({
         message: `The project ${title} has been updated`,
         project: project
@@ -80,7 +122,7 @@ app.put('/projects/:id', (request, response) => {
 })
 
 // DELETE
-app.delete('/projects/:id', (request, response) => {
+app.delete('/projects/:id', validateProjectId, (request, response) => {
 
     // get the id
     const { id } = request.params;
@@ -98,8 +140,7 @@ app.delete('/projects/:id', (request, response) => {
     projects.splice(projectIndex, 1);
 
     // return the success status code with an empty response
-    return response.status(204).send();
-    
+    return response.status(204).send();    
 
 })
 
