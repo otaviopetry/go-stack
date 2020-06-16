@@ -2,30 +2,41 @@ const express = require('express');
 
 const app = express();
 
+// required to work with request body
+app.use(express.json());
+
+// READ
 app.get('/projects', (request, response) => {
+    const query = request.query;
+
     return response.json({
-        message: 'Hello, dude!'
+        title: query.title,
+        owner: query.owner
     });
 })
 
-app.post('/projects', (request, response) => {
-    return response.json([
-        'Project 1',
-        'Project 2',
-        'Project 3'
-    ])
+//CREATE
+app.post('/projects', (request, response) => {    
+    const body = request.body;
+    
+    return response.json(body);
 })
 
+// UPDATE
 app.put('/projects/:id', (request, response) => {
-
+    const params = request.params;
+    
     return response.json({
-        message: `Project ${request.params.id} has been updated.`
+        message: `Project ${params.id} has been updated.`
     })
 })
 
+// DELETE
 app.delete('/projects/:id', (request, response) => {
+    const params = request.params;
+
     return response.json({
-        message: `Project ${request.params.id} has been deleted.`
+        message: `Project ${params.id} has been deleted.`
     })
 })
 
