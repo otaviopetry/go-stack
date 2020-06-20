@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import api from './services/api';
 
 import './App.css';
 import backgroundImage from './assets/background.jpg';
@@ -7,8 +9,17 @@ import Header from './components/Header';
 
 function App() {
 
-    const [projects, setProjects] = useState(['Voz Animal', 'North Drone', 'otavio.site']);
+    // initialize projects state with an empty array
+    const [projects, setProjects] = useState([]);
 
+    useEffect(() =>{
+        api.get('projects').then(response => {
+            setProjects(response.data);            
+        })
+    }, []);
+
+
+    // add project button
     function handleAddProject() {
         // projects.push(`Novo projeto ${Date.now()}`);
 
@@ -19,10 +30,15 @@ function App() {
         <>
             <Header title="Projects" />
 
-            <img src={backgroundImage} />
-
             <ul>
-                {projects.map(project => <li key={project}>{project}</li>)}
+                { projects.map( project => (
+                    <li key={project.id}>
+                        <h3>{project.title}</h3>
+                        <p>{project.author}</p>
+                        <p>{project.nationality}</p>
+                    </li>
+                )) }
+                {/* {projects.map(project => <li key={project}>{project}</li>)} */}
             </ul>
 
             <button type="button" onClick={handleAddProject}>Adicionar projeto</button>

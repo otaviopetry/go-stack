@@ -7,6 +7,7 @@ Packages installed so far:
 - Express
 - Nodemon -D
 - uuidv4
+- cors
 
 To run the server:
 ```
@@ -27,3 +28,4 @@ Packages installed so far:
 - style-loader
 - css-loader
 - file-loader
+- Axios
