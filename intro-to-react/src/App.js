@@ -12,18 +12,21 @@ function App() {
     // initialize projects state with an empty array
     const [projects, setProjects] = useState([]);
 
+    // make api get request everytime projects change
     useEffect(() =>{
         api.get('projects').then(response => {
             setProjects(response.data);            
         })
-    }, []);
+    }, [projects]);
 
 
     // add project button
     function handleAddProject() {
-        // projects.push(`Novo projeto ${Date.now()}`);
-
-        setProjects([...projects, 'Primeiro emprego']);
+        api.post('projects', {
+            title: "Balada No. 1 em Sol menor, Op. 23",
+            author: "Frédéric Chopin",
+            nationality: "Polish/French"
+        })
     }
 
     return (
