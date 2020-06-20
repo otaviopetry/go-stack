@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import api from './services/api';
 
 import './App.css';
-import backgroundImage from './assets/background.jpg';
 
 import Header from './components/Header';
 
@@ -12,21 +11,28 @@ function App() {
     // initialize projects state with an empty array
     const [projects, setProjects] = useState([]);
 
-    // make api get request everytime projects change
     useEffect(() =>{
         api.get('projects').then(response => {
             setProjects(response.data);            
         })
-    }, [projects]);
+    }, []);
 
 
     // add project button
-    function handleAddProject() {
-        api.post('projects', {
+    async function handleAddProject() { 
+        
+        // make the post request and store its response 
+        const response = await api.post('projects', {
             title: "Balada No. 1 em Sol menor, Op. 23",
             author: "Frédéric Chopin",
             nationality: "Polish/French"
-        })
+        });
+
+        // get the data object from the response
+        const project = response.data;
+
+        // change the state
+        setProjects([...projects, project]);
     }
 
     return (

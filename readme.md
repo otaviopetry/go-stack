@@ -29,3 +29,4 @@ Packages installed so far:
 - css-loader
 - file-loader
 - Axios
+- @babel/plugin-transform-runtime -D
