@@ -24,4 +24,6 @@ Packages installed so far:
 - @babel-cli
 - babel-loader
 - webpack-dev-server -D
-
+- style-loader
+- css-loader
+- file-loader
