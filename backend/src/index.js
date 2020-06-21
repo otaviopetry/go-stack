@@ -149,6 +149,6 @@ app.delete('/projects/:id', validateProjectId, (request, response) => {
 
 app.listen('3333', () => {
 
-    console.log(' 🚀 The server is up and running, dude :D');
+    console.log(' 🚀  The server is up and running, dude :D');
 
 });
