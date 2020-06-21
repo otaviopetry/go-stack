@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import { View, SafeAreaView, FlatList, Text, StyleSheet, StatusBar } from 'react-native';
 
 import api from './services/api';
 
@@ -17,15 +17,20 @@ export default function App() {
     return (
         <>
             <StatusBar barStyle="light-content" />
-            <View style={styles.container}>
-                {projects.map(project => (
-                    <View key={project.id} style={styles.project}>
-                        <Text style={styles.title}>{project.title}</Text>
-                        <Text style={styles.author}>{project.author}</Text>
-                    </View>
-                ))}
-                
-            </View>
+
+            <SafeAreaView style={styles.container}>
+                <FlatList
+                    
+                    data={projects}
+                    keyExtractor={project => project.id}
+                    renderItem={({ item: project }) => (
+                        <View style={styles.project}>
+                            <Text style={styles.title}>{project.title}</Text>
+                            <Text style={styles.author}>{project.author}</Text>
+                        </View>                    
+                    )}
+                />
+            </SafeAreaView>
         </>
     );
 }
@@ -34,11 +39,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#e5e5e5',
-        padding: 16,
+        alignItems: 'center',
         justifyContent: 'center'
     },
     project: {
-        marginBottom: 16
+        marginBottom: 16,
+        flex: 1,
+        justifyContent: 'center'
     },
     title: {
         fontSize: 32,
