@@ -37,7 +37,10 @@ appointmentsRouter.post('/', (request, response) => {
     }
 
     // create the appointment object
-    const appointment = appointmentsRepository.create(provider, parsedDate);
+    const appointment = appointmentsRepository.create({
+        provider,
+        date: parsedDate,
+    });
 
     // send appointment as response
     return response.json(appointment);
