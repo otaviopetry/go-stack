@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { startOfHour, parseISO, isEqual } from 'date-fns';
-import Appointment from '../models/Appointment';
+import { startOfHour, parseISO } from 'date-fns';
+import AppointmentsRepository from '../repositories/AppointmentsRepository';
 
 // create express instance
 const appointmentsRouter = Router();
 
-// start appointments container || alternative method -> Appointment[]
-const appointments: Array<Appointment> = [];
+// create appointments container
+const appointmentsRepository = new AppointmentsRepository();
 
 // create appointment route
 appointmentsRouter.post('/', (request, response) => {
@@ -16,23 +16,20 @@ appointmentsRouter.post('/', (request, response) => {
     // convert the date
     const parsedDate = startOfHour(parseISO(date));
 
-    // check if date is not booked
-    const findAppointmentDateConflict = appointments.find(appointment =>
-        isEqual(parsedDate, appointment.date),
+    // use the findByDate method created in appointments repository
+    const findAppointmentConflict = appointmentsRepository.findByDate(
+        parsedDate,
     );
 
     // if it is, return error
-    if (findAppointmentDateConflict) {
+    if (findAppointmentConflict) {
         return response
             .status(400)
             .json({ message: 'This hour is already booked!' });
     }
 
-    // create a new appointment object
-    const appointment = new Appointment(provider, parsedDate);
-
-    // insert it into container
-    appointments.push(appointment);
+    // create the appointment object
+    const appointment = appointmentsRepository.create(provider, parsedDate);
 
     // send appointment as response
     return response.json(appointment);
