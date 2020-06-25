@@ -8,6 +8,14 @@ const appointmentsRouter = Router();
 // create appointments container
 const appointmentsRepository = new AppointmentsRepository();
 
+// list appointments route
+appointmentsRouter.get('/', (request, response) => {
+    // access the method all() in appointments and store the response
+    const appointments = appointmentsRepository.all();
+
+    return response.json(appointments);
+});
+
 // create appointment route
 appointmentsRouter.post('/', (request, response) => {
     // get data from body

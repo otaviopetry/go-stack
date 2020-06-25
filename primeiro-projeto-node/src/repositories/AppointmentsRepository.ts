@@ -9,6 +9,11 @@ class AppointmentsRepository {
         this.appointments = [];
     }
 
+    // public method for listing appointments
+    public all(): Appointment[] {
+        return this.appointments;
+    }
+
     // public method to find appointments in same slot
     public findByDate(date: Date): Appointment | null {
         // check if date is not booked
