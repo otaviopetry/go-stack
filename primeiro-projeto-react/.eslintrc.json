@@ -49,7 +49,8 @@
         ],
         "prettier/prettier": "error",
         "@typescript-eslint/camelcase": "off",
-        "camelcase": "off"
+        "camelcase": "off",
+        "react/jsx-one-expression-per-line": "off"
     },
     "settings": {
         "import/resolver": {
